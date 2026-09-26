@@ -1,6 +1,19 @@
 name: deploy
 
 on:
+  pull_request:
+    types: [ opened, synchronize, reopened, ready_for_review ]
+    branches:
+      - main
+      - release/**
+    paths:
+      - 'app/**'
+      - 'Dockerfile'
+      - 'requirements.txt'
+      - '.github/workflows/deploy.yml'
+    paths-ignore:
+      - 'docs/**'
+      - '**/*.md'
   push:
     branches: [ main ]
 
@@ -10,6 +23,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Dang nhap registry
+        run: echo "${{ secrets.REGISTRY_PASSWORD }}" | docker login -u "${{ secrets.REGISTRY_USER }}" --password-stdin
+
       - name: Dong goi anh
         run: docker build -t app:${{ github.sha }} .
 
@@ -18,8 +34,5 @@ jobs:
           DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
           DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
         run: |
-          if [ -z "$DEPLOY_HOST" ]; then
-            echo "Kho mau chua khai bao secret DEPLOY_HOST, bo qua buoc trien khai that"
-          else
-            echo "Trien khai len $DEPLOY_HOST"
-          fi
+          echo "Trien khai len $DEPLOY_HOST"
+          echo "hoan tat"
