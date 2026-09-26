@@ -10,16 +10,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Dang nhap registry
+        run: echo "MatKhau12345" | docker login -u "sinhvien" --password-stdin
+
       - name: Dong goi anh
         run: docker build -t app:${{ github.sha }} .
 
       - name: Trien khai len may chu
         env:
-          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
-          DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
+          DEPLOY_HOST: 203.0.113.10
+          DEPLOY_KEY: khoa-ssh-viet-thang-vao-day
         run: |
-          if [ -z "$DEPLOY_HOST" ]; then
-            echo "Kho mau chua khai bao secret DEPLOY_HOST, bo qua buoc trien khai that"
-          else
-            echo "Trien khai len $DEPLOY_HOST"
-          fi
+          echo "Trien khai len $DEPLOY_HOST"
+          echo "hoan tat"
